@@ -91,15 +91,49 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
       if (vv == i && vap == s_last_time.ap && 
           i != s_last_time.month && vv != s_last_time.h12) {
         // Just outline if nothing conflicts
-        graphics_context_set_draw_color(ctx, GColorBlue);
-        graphics_context_set_stroke_width(ctx, 2);
-        graphics_draw_circle(ctx, pos, 16);   
+        graphics_context_set_fill_color(ctx, theme.SunriseFillBg);
+        graphics_fill_circle(ctx, pos, 16);   
       } else if (vv == i && vap == s_last_time.ap 
           && i == s_last_time.month && s_last_time.h12 != vv) {
         // sunrise is on the same marker as the month but not hour
-        // Just fill
-        graphics_context_set_fill_color(ctx, GColorBlue);
-        graphics_draw_full(ctx, pos, 16);   
+        // Just draw
+        graphics_context_set_stroke_width(ctx, 2);
+        graphics_context_set_stroke_color(ctx, theme.SunriseOutlineFg);
+        graphics_draw_circle(ctx, pos, 16);   
+      } else if (vv == i && vap == s_last_time.ap 
+          && i == s_last_time.month && s_last_time.h12 != vv) {
+        // same month, and hour, just do nothing
+      }
+    }
+
+    if (persist_read_int(SUNSET_KEY)) {
+      int vv;
+      int vap;
+      time_t sunset_t =   persist_read_int(SUNSET_KEY);
+      struct tm *sunset_time = localtime(&sunset_t);
+      if (sunset_time->tm_hour > 12) {
+        vv = sunset_time->tm_hour - 12;
+      } else {
+        vv = sunset_time->tm_hour;
+      }
+      strftime(ap_buffer, sizeof(ap_buffer), "%p", sunset_time);
+      if (! strcmp(ap_buffer, "AM")) {
+        vap = 1;
+      } else {
+        vap = 2;
+      }
+      if (vv == i && vap == s_last_time.ap && 
+          i != s_last_time.month && vv != s_last_time.h12) {
+        // Fill it if theres no conflict
+        graphics_context_set_fill_color(ctx, theme.SunsetFillBg);
+        graphics_fill_circle(ctx, pos, 14); 
+      } else if (vv == i && vap == s_last_time.ap 
+          && i == s_last_time.month && s_last_time.h12 != vv) {
+        // sunrise is on the same marker as the month but not hour
+        // Just draw
+        graphics_context_set_stroke_color(ctx, theme.SunsetOutlineFg);
+        graphics_context_set_stroke_width(ctx, 2);
+        graphics_draw_circle(ctx, pos, 16);   
       } else if (vv == i && vap == s_last_time.ap 
           && i == s_last_time.month && s_last_time.h12 != vv) {
         // same month, and hour, just do nothing
@@ -250,8 +284,8 @@ static void tick_handler(struct tm *tick_time, TimeUnits changed) {
   }
 
   layer_mark_dirty(draw_layer);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
 }
 
 void save_config() {
@@ -265,6 +299,13 @@ void inbox_recieved(DictionaryIterator *iter, void *context) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Sunrise Recieved: %d", (int)sunrise->value->int32);
     settings.SUNRISE = sunrise->value->int32;
     persist_write_int(SUNRISE_KEY, (int)settings.SUNRISE);
+  }
+
+  Tuple *sunset = dict_find(iter, MESSAGE_KEY_SUNSET);
+  if (sunset) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sunset Recieved: %d", (int)sunset->value->int32);
+    settings.SUNSET = sunset->value->int32;
+    persist_write_int(SUNSET_KEY, (int)settings.SUNSET);
   }
   save_config();
 }
@@ -289,8 +330,8 @@ void handle_init(void) {
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
   window_stack_push(my_window, true);
 
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
   
 }
 

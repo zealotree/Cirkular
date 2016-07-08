@@ -8,8 +8,8 @@ void load_default_theme() {
   theme.MainBg = GColorBlack;
   theme.CurrentHourBg = GColorWhite;
   theme.CurrentMinuteFg = GColorBlack;
-  theme.OuterRingFg = GColorBlack;
-  theme.OuterRingCardinalFg = GColorWhite;
+  theme.OuterRingFg = GColorDarkGray; // Hour Rings
+  theme.OuterRingCardinalFg = GColorWhite; // Cardinal Hour Rings
   theme.CurrentMonthOutlineFg = GColorRed;
   theme.CurrentMonthFillBg = GColorChromeYellow;
   theme.MiddleRingMarkerFg = GColorMelon;
@@ -20,6 +20,10 @@ void load_default_theme() {
   theme.CurrentDoWFillBg = GColorChromeYellow ;
   theme.LeapYearFg = GColorMelon ;
   theme.NonLeapYearFg = GColorWhite ;
+  theme.SunriseFillBg = GColorBlue;
+  theme.SunriseOutlineFg = GColorBlue;
+  theme.SunsetFillBg = GColorCadetBlue;
+  theme.SunsetOutlineFg = GColorSunsetOrange;
 }
 
 Settings settings;
