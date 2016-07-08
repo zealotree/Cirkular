@@ -7,8 +7,8 @@
   "dependencies": {},
   "pebble": {
     "displayName": "Cirkular",
-    "_uuid": "384ed117-6bc4-4042-a3ec-9445dac093ab",
-    "uuid": "40740079-5532-46d9-98f4-de3e5cce98d1",
+    "uuid": "384ed117-6bc4-4042-a3ec-9445dac093ab",
+    "_uuid": "40740079-5532-46d9-98f4-de3e5cce98d1",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [

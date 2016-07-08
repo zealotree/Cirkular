@@ -7,7 +7,7 @@ void load_default_theme() {
   theme.MainBg = GColorBlack;
   theme.CurrentHourBg = GColorWhite;
   theme.CurrentMinuteFg = GColorBlack;
-  theme.OuterRingFg = GColorDarkGray;
+  theme.OuterRingFg = GColorBlack;
   theme.OuterRingCardinalFg = GColorWhite;
   theme.CurrentMonthOutlineFg = GColorRed;
   theme.CurrentMonthFillBg = GColorChromeYellow;
