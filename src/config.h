@@ -4,6 +4,7 @@
 #define SETTINGS_KEY 1
 #define SUNRISE_KEY 2
 #define SUNSET_KEY 3
+#define SEND 900
 
 typedef struct {
   GColor MainBg;

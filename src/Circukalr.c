@@ -19,6 +19,7 @@ static Time s_last_time;
 static GTextAttributes *s_attributes;
 char m_buffer[] = "59";
 char ap_buffer[] = "AM";
+bool s_js_ready = false;
 
 // Our Settings
 Theme theme;
@@ -52,6 +53,25 @@ static bool is_leap_year(int year) {
     return 0;
  
   return 0;
+}
+
+void request_data() {
+  if (! s_js_ready) {
+    return ;
+  }
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting Data");
+  DictionaryIterator *out_iter;
+  AppMessageResult result = app_message_outbox_begin(&out_iter);
+  if(result == APP_MSG_OK) {
+    int value = 1;
+    dict_write_int(out_iter, MESSAGE_KEY_SEND, &value, sizeof(int), true);
+    result = app_message_outbox_send();
+    if(result != APP_MSG_OK) {
+      APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
+    } else if ((result == APP_MSG_OK)){
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Data succesfully requested");
+    }
+  }
 }
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
@@ -283,6 +303,10 @@ static void tick_handler(struct tm *tick_time, TimeUnits changed) {
     s_last_time.ap = 2;
   }
 
+  if (DAY_UNIT & changed) {
+    request_data();
+  }
+
   layer_mark_dirty(draw_layer);
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
@@ -294,6 +318,14 @@ void save_config() {
 }
 
 void inbox_recieved(DictionaryIterator *iter, void *context) {
+  Tuple *ready_tuple = dict_find(iter, MESSAGE_KEY_AppKeyJSReady);
+
+  if(ready_tuple) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "PebbleKit JS is ready! Safe to send messages");
+    s_js_ready = true;
+    request_data();
+  }
+
   Tuple *sunrise = dict_find(iter, MESSAGE_KEY_SUNRISE);
   if (sunrise) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Sunrise Recieved: %d", (int)sunrise->value->int32);
@@ -327,9 +359,8 @@ void handle_init(void) {
   s_attributes = graphics_text_attributes_create();
   
   layer_add_child(window_layer, draw_layer);
-  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  tick_timer_service_subscribe(MINUTE_UNIT | DAY_UNIT, tick_handler);
   window_stack_push(my_window, true);
-
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
   
