@@ -1,3 +1,4 @@
+#include <pebble.h>
 #include <config.h>
 
 Theme theme;
@@ -20,4 +21,11 @@ void load_default_theme() {
   theme.LeapYearFg = GColorMelon ;
   theme.NonLeapYearFg = GColorWhite ;
 }
+
+Settings settings;
+void load_default_settings() {
+  settings.ENABLE_SUN = true; // Gets current location
+}
+
+
 

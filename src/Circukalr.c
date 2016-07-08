@@ -20,8 +20,9 @@ static GTextAttributes *s_attributes;
 char m_buffer[] = "59";
 char ap_buffer[] = "AM";
 
-// Our Color Settings
+// Our Settings
 Theme theme;
+Settings settings;
 
 
 
@@ -62,13 +63,48 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_stroke_color(ctx, GColorRed);
 
   for(int i = 0; i < 13; i++) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", i);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", i);
 //     APP_LOG(APP_LOG_LEVEL_DEBUG, "month is %d", s_last_time.month);
+//
 
     int hour_angle = get_angle_for_hour(i);
     graphics_context_set_text_color(ctx, theme.CurrentMinuteFg);
 
     GPoint pos = gpoint_from_polar(month_hour_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(hour_angle));
+
+    if (persist_read_int(SUNRISE_KEY)) {
+      int vv;
+      int vap;
+      time_t sunrise_t =   persist_read_int(SUNRISE_KEY);
+      struct tm *sunrise_time = localtime(&sunrise_t);
+      if (sunrise_time->tm_hour > 12) {
+        vv = sunrise_time->tm_hour - 12;
+      } else {
+        vv = sunrise_time->tm_hour;
+      }
+      strftime(ap_buffer, sizeof(ap_buffer), "%p", sunrise_time);
+      if (! strcmp(ap_buffer, "AM")) {
+        vap = 1;
+      } else {
+        vap = 2;
+      }
+      if (vv == i && vap == s_last_time.ap && 
+          i != s_last_time.month && vv != s_last_time.h12) {
+        // Just outline if nothing conflicts
+        graphics_context_set_draw_color(ctx, GColorBlue);
+        graphics_context_set_stroke_width(ctx, 2);
+        graphics_draw_circle(ctx, pos, 16);   
+      } else if (vv == i && vap == s_last_time.ap 
+          && i == s_last_time.month && s_last_time.h12 != vv) {
+        // sunrise is on the same marker as the month but not hour
+        // Just fill
+        graphics_context_set_fill_color(ctx, GColorBlue);
+        graphics_draw_full(ctx, pos, 16);   
+      } else if (vv == i && vap == s_last_time.ap 
+          && i == s_last_time.month && s_last_time.h12 != vv) {
+        // same month, and hour, just do nothing
+      }
+    }
     if (i == s_last_time.month + 1) {
       
       if (s_last_time.h12 == s_last_time.month + 1) {
@@ -213,14 +249,30 @@ static void tick_handler(struct tm *tick_time, TimeUnits changed) {
     s_last_time.ap = 2;
   }
 
-
-
-
   layer_mark_dirty(draw_layer);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
+}
+
+void save_config() {
+  persist_write_data(SETTINGS_KEY, &settings, sizeof(settings)); 
+  layer_mark_dirty(draw_layer);
+}
+
+void inbox_recieved(DictionaryIterator *iter, void *context) {
+  Tuple *sunrise = dict_find(iter, MESSAGE_KEY_SUNRISE);
+  if (sunrise) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sunrise Recieved: %d", (int)sunrise->value->int32);
+    settings.SUNRISE = sunrise->value->int32;
+    persist_write_int(SUNRISE_KEY, (int)settings.SUNRISE);
+  }
+  save_config();
 }
 
 
 void handle_init(void) {
+  app_message_register_inbox_received(inbox_recieved);
+  app_message_open(128, 128);
   //light_enable(true);
   my_window = window_create();
   load_default_theme();
@@ -236,11 +288,15 @@ void handle_init(void) {
   layer_add_child(window_layer, draw_layer);
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
   window_stack_push(my_window, true);
+
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Set: %d", (int)settings.SUNRISE);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Per: %d", (int)persist_read_int(SUNRISE_KEY));
   
 }
 
 
 void handle_deinit(void) {
+  app_message_deregister_callbacks(); 
   window_destroy(my_window);
   layer_destroy(draw_layer);
   graphics_text_attributes_destroy(s_attributes);
