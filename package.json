@@ -1,0 +1,25 @@
+{
+  "name": "Cirkular",
+  "author": "Zealotree",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "Cirkular",
+    "uuid": "384ed117-6bc4-4042-a3ec-9445dac093ab",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "chalk"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+    ],
+    "resources": {
+      "media": []
+    }
+  }
+}
