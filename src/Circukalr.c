@@ -69,13 +69,9 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
     GPoint pos = gpoint_from_polar(month_hour_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(hour_angle));
 
-    if (i == s_last_time.month + 1) { // The Current month
-      graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
-      graphics_context_set_stroke_width(ctx, 2);
-      graphics_draw_circle(ctx, pos, 15);
-    } else if (i == s_last_time.h12) { // Mark the current hour
+    if (i == s_last_time.h12) { // Mark the current hour
       graphics_context_set_fill_color(ctx, theme.CurrentHourBg);
-      graphics_context_set_stroke_color(ctx, theme.OuterRingFg);
+      graphics_context_set_stroke_color(ctx, theme.CurrentHourOutlineFg); // Cardinals canot be overriden
       graphics_context_set_stroke_width(ctx, 1);
       graphics_fill_circle(ctx, pos, 14);
       graphics_draw_circle(ctx, pos, 15);
@@ -84,12 +80,22 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
                      GTextOverflowModeWordWrap, GTextAlignmentCenter, s_attributes);
     } else if (i % 3 == 0) { // Mark the Cardinal
       graphics_context_set_stroke_color(ctx, theme.OuterRingCardinalFg);
+      graphics_context_set_fill_color(ctx, theme.OuterRingEmptyBg);
       graphics_context_set_stroke_width(ctx, 1);
       graphics_draw_circle(ctx, pos, 15);  
+      graphics_fill_circle(ctx, pos, 14);
     } else {
       graphics_context_set_stroke_color(ctx, theme.OuterRingFg);
+	  graphics_context_set_fill_color(ctx, theme.OuterRingEmptyBg);
       graphics_context_set_stroke_width(ctx, 1);
       graphics_draw_circle(ctx, pos, 15);  
+      graphics_fill_circle(ctx, pos, 14);
+    }
+
+    if (i == s_last_time.month + 1) { // The Current month
+      graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
+      graphics_context_set_stroke_width(ctx, 2);
+      graphics_draw_circle(ctx, pos, 15);
     }
    
   }
@@ -101,43 +107,40 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
    
 
     GPoint pos = gpoint_from_polar(day_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(day_angle));
-    if (i == s_last_time.day) {
+    if (i == s_last_time.day) { // Mark the day
       graphics_context_set_fill_color(ctx, theme.CurrentDayBg);
+      graphics_context_set_stroke_color(ctx, theme.CurrentDayOutlineFg);
+      graphics_context_set_stroke_width(ctx, 1);
       graphics_fill_circle(ctx, pos, 3);
-      
-      if (i % 5 == 0){
-        graphics_context_set_stroke_width(ctx, 1);
-        graphics_context_set_stroke_color(ctx, theme.MiddleRingMarkerFg);
-      } else {
-        graphics_context_set_stroke_width(ctx, 1);
-        graphics_context_set_stroke_color(ctx, theme.MiddleRingFg);
-      }
       graphics_draw_circle(ctx, pos, 3);
-    } else {
-      if (i % 5 == 0){
-        graphics_context_set_stroke_width(ctx, 1);
-        graphics_context_set_stroke_color(ctx, theme.MiddleRingMarkerFg);
-      } else {
-        graphics_context_set_stroke_width(ctx, 1);
-        graphics_context_set_stroke_color(ctx, theme.MiddleRingFg);
-      }
-      graphics_draw_circle(ctx, pos, 3);
+    } else if (i % 5 == 0) { // Mark the fives
+      graphics_context_set_stroke_color(ctx, theme.MiddleRingMarkerFg);
+	  graphics_context_set_fill_color(ctx, theme.MiddleRingEmptyBg);
+      graphics_context_set_stroke_width(ctx, 1);
+      graphics_fill_circle(ctx, pos, 3);
+      graphics_draw_circle(ctx, pos, 3);  
+    } else { // Just fill
+      graphics_context_set_stroke_color(ctx, theme.MiddleRingFg);
+	  graphics_context_set_fill_color(ctx, theme.MiddleRingEmptyBg);
+      graphics_context_set_stroke_width(ctx, 1);
+      graphics_fill_circle(ctx, pos, 3);
+      graphics_draw_circle(ctx, pos, 3);  
     }
-    
-    if (i == 30) {
-      GPoint pos_31 = GPoint(pos.x, pos.y + 8);
-      if (s_last_time.day == 31) {
+    if (i == 30) { // Get the 30th pos
+      GPoint pos_31 = GPoint(pos.x, pos.y + 8); // Get 31st post
+      if (s_last_time.day == 31) { // Mark it day is 31
         graphics_context_set_stroke_width(ctx, 1);
-        graphics_context_set_stroke_color(ctx, theme.CurrentDayOutlineFg);
-        graphics_context_set_fill_color(ctx, theme.CurrentDayBg);
-        graphics_fill_circle(ctx, pos_31, 2);
+        graphics_context_set_stroke_color(ctx, theme.CurrentDayBg);
+        graphics_context_set_fill_color(ctx, theme.CurrentDayOutlineFg);
+        graphics_fill_circle(ctx, pos_31, 3);
         graphics_draw_circle(ctx, pos_31, 3);
       } else {
         graphics_context_set_stroke_width(ctx, 1);
         graphics_context_set_stroke_color(ctx, theme.MiddleRingFg);
-        graphics_draw_circle(ctx, pos_31, 3);
+        graphics_context_set_fill_color(ctx, theme.MiddleRingEmptyBg);
+		graphics_fill_circle(ctx, pos_31, 3);
+		graphics_draw_circle(ctx, pos_31, 3);  
       }
-
     }
   }
 
