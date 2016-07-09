@@ -98,17 +98,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   for(int i = 1; i < 31; i++) {
 
     int day_angle = get_angle_for_day(i);
-    
-//     if (s_last_time.day == 1){
-//       ri = 30;
-//     } else if (s_last_time.day == 31) {
-//       ri = 31;
-//     } else {
-//       ri = s_last_time.day - 1; // debug here
-//     }
-//     APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", ri);
-
-//     int v = i + 1;
+   
 
     GPoint pos = gpoint_from_polar(day_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(day_angle));
     if (i == s_last_time.day) {
