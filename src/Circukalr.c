@@ -164,12 +164,14 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
       if (s_last_time.h12 == s_last_time.month + 1) {
         // Case where time and month are the same
         graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
-        graphics_context_set_stroke_width(ctx, 2);
-        graphics_draw_circle(ctx, pos, 16);   
+        graphics_context_set_fill_color(ctx, theme.CurrentMonthFillBg);
+        graphics_context_set_stroke_width(ctx, 1);
+        graphics_draw_circle(ctx, pos, 15);   
+        graphics_fill_circle(ctx, pos, 14); 
       } else {
         graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
         graphics_context_set_fill_color(ctx, theme.CurrentMonthFillBg);
-        graphics_context_set_stroke_width(ctx, 2);
+        graphics_context_set_stroke_width(ctx, 1);
         graphics_draw_circle(ctx, pos, 15);
         graphics_fill_circle(ctx, pos, 14); 
       }
@@ -186,8 +188,18 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     }
     
     if (i == s_last_time.h12) {
-      graphics_context_set_fill_color(ctx, theme.CurrentHourBg);
-      graphics_fill_circle(ctx, pos, 15);
+
+      if (s_last_time.h12 == s_last_time.month + 1) {
+        graphics_context_set_fill_color(ctx, theme.CurrentMonthFillBg);
+        graphics_context_set_text_color(ctx, gcolor_legible_over(theme.CurrentMonthFillBg));
+        graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
+        graphics_draw_circle(ctx, pos, 15);
+        graphics_fill_circle(ctx, pos, 14);
+      } else {
+        graphics_context_set_fill_color(ctx, theme.CurrentHourBg);
+        graphics_context_set_text_color(ctx, theme.CurrentMinuteFg);
+        graphics_fill_circle(ctx, pos, 14);
+      }
       GRect kte = grect_centered_from_polar(month_hour_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(hour_angle), GSize(26,26));
       graphics_draw_text(ctx, m_buffer+((' ' == m_buffer[0])?1:0), fonts_get_system_font(FONT_KEY_LECO_20_BOLD_NUMBERS), kte,
                      GTextOverflowModeWordWrap, GTextAlignmentCenter, s_attributes);
