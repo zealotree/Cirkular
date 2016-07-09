@@ -61,7 +61,6 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
 
   for(int i = 0; i < 13; i++) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", i);
 //     APP_LOG(APP_LOG_LEVEL_DEBUG, "month is %d", s_last_time.month);
 
     int hour_angle = get_angle_for_hour(i);
