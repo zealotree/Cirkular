@@ -4,20 +4,20 @@ Theme theme;
 
 void load_default_theme() {
   // Override these to change color before compiling
-  theme.MainBg = GColorBlack;
-  theme.CurrentHourBg = GColorWhite;
-  theme.CurrentMinuteFg = GColorBlack;
-  theme.OuterRingFg = GColorBlack;
-  theme.OuterRingCardinalFg = GColorWhite;
+  theme.MainBg = GColorWhite;
+  theme.CurrentHourBg = GColorBlack;
+  theme.CurrentMinuteFg = GColorWhite;
+  theme.OuterRingFg = GColorLightGray;
+  theme.OuterRingCardinalFg = GColorDarkGray;
   theme.CurrentMonthOutlineFg = GColorRed;
-  theme.CurrentMonthFillBg = GColorChromeYellow;
-  theme.MiddleRingMarkerFg = GColorMelon;
+  theme.CurrentMonthFillBg = GColorChromeYellow; // No Effect as of now
+  theme.MiddleRingMarkerFg = GColorBlack;
   theme.MiddleRingFg = GColorDarkGray;
-  theme.CurrentDayBg = GColorChromeYellow;
-  theme.CurrentDayOutlineFg = GColorChromeYellow;
+  theme.CurrentDayBg = GColorBlack;
+  theme.CurrentDayOutlineFg = GColorDarkGray;
   theme.InnerRingFg = GColorDarkGray;
-  theme.CurrentDoWFillBg = GColorChromeYellow ;
-  theme.LeapYearFg = GColorMelon ;
-  theme.NonLeapYearFg = GColorWhite ;
+  theme.CurrentDoWFillBg = GColorBlack;
+  theme.LeapYearFg = GColorRed;
+  theme.NonLeapYearFg = GColorBlack;
 }
 

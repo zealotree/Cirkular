@@ -59,7 +59,6 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   
   GRect month_hour_ring = grect_inset(bounds, GEdgeInsets(22));
 
-  graphics_context_set_stroke_color(ctx, GColorRed);
 
   for(int i = 0; i < 13; i++) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", i);
@@ -69,39 +68,30 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     graphics_context_set_text_color(ctx, theme.CurrentMinuteFg);
 
     GPoint pos = gpoint_from_polar(month_hour_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(hour_angle));
-    if (i == s_last_time.month + 1) {
-      
-      if (s_last_time.h12 == s_last_time.month + 1) {
-        // Case where time and month are the same
-        graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
-        graphics_context_set_stroke_width(ctx, 2);
-        graphics_draw_circle(ctx, pos, 16);   
-      } else {
-        graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
-        graphics_context_set_fill_color(ctx, theme.CurrentMonthFillBg);
-        graphics_context_set_stroke_width(ctx, 2);
-        graphics_draw_circle(ctx, pos, 15);
-        graphics_fill_circle(ctx, pos, 14); 
-      }
 
-    } else {
-      graphics_context_set_stroke_width(ctx, 1);
-      if (i % 3 == 0) {
-        graphics_context_set_stroke_color(ctx, theme.OuterRingCardinalFg);
-        graphics_context_set_stroke_width(ctx, 1);
-      } else {
-        graphics_context_set_stroke_color(ctx, theme.OuterRingFg);
-      }
+    if (i == s_last_time.month + 1) { // The Current month
+      graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
+      graphics_context_set_stroke_width(ctx, 2);
       graphics_draw_circle(ctx, pos, 15);
-    }
-    
-    if (i == s_last_time.h12) {
+    } else if (i == s_last_time.h12) { // Mark the current hour
       graphics_context_set_fill_color(ctx, theme.CurrentHourBg);
-      graphics_fill_circle(ctx, pos, 15);
+      graphics_context_set_stroke_color(ctx, theme.OuterRingFg);
+      graphics_context_set_stroke_width(ctx, 1);
+      graphics_fill_circle(ctx, pos, 14);
+      graphics_draw_circle(ctx, pos, 15);
       GRect kte = grect_centered_from_polar(month_hour_ring, GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE(hour_angle), GSize(26,26));
       graphics_draw_text(ctx, m_buffer+((' ' == m_buffer[0])?1:0), fonts_get_system_font(FONT_KEY_LECO_20_BOLD_NUMBERS), kte,
                      GTextOverflowModeWordWrap, GTextAlignmentCenter, s_attributes);
+    } else if (i % 3 == 0) { // Mark the Cardinal
+      graphics_context_set_stroke_color(ctx, theme.OuterRingCardinalFg);
+      graphics_context_set_stroke_width(ctx, 1);
+      graphics_draw_circle(ctx, pos, 15);  
+    } else {
+      graphics_context_set_stroke_color(ctx, theme.OuterRingFg);
+      graphics_context_set_stroke_width(ctx, 1);
+      graphics_draw_circle(ctx, pos, 15);  
     }
+   
   }
   
   GRect day_ring = grect_inset(bounds, GEdgeInsets(47));
