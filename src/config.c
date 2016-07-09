@@ -6,6 +6,8 @@ Theme theme;
 void load_default_theme() {
   // Override these to change color before compiling
   theme.MainBg = GColorBlack;
+  theme.OuterRingEmptyBg = GColorClear;
+  theme.MiddleRingEmptyBg = GColorClear;
   theme.CurrentHourBg = GColorWhite;
   theme.CurrentMinuteFg = GColorBlack;
   theme.OuterRingFg = GColorDarkGray; // Hour Rings

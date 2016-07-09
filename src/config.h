@@ -27,6 +27,10 @@ typedef struct {
   GColor CurrentDoWFillBg;
   GColor LeapYearFg;
   GColor NonLeapYearFg;
+  GColor SunriseFillBg;
+  GColor SunriseOutlineFg;
+  GColor SunsetFillBg;
+  GColor SunsetOutlineFg;
 }  __attribute__((__packed__)) Theme;
 
 typedef struct {
