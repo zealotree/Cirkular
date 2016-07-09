@@ -227,8 +227,10 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
     if (i == s_last_time.month + 1) { // The Current month
       graphics_context_set_stroke_color(ctx, theme.CurrentMonthOutlineFg);
+      graphics_context_set_fill_color(ctx, theme.CurrentMonthFillBg);
       graphics_context_set_stroke_width(ctx, 2);
       graphics_draw_circle(ctx, pos, 15);
+      graphics_fill_circle(ctx, pos, 14);
     }	
    
   }

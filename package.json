@@ -1,13 +1,12 @@
 {
-  "name": "Cirkular with Sun",
+  "name": "Cirkular Helios",
   "author": "Zealotree",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "keywords": ["pebble-app"],
   "private": true,
   "dependencies": {},
   "pebble": {
     "displayName": "Cirkular Helios",
-    "_uuid": "384ed117-6bc4-4042-a3ec-9445dac093ab",
     "uuid": "40740079-5532-46d9-98f4-de3e5cce98d1",
     "sdkVersion": "3",
     "enableMultiJS": true,
