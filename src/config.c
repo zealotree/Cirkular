@@ -20,12 +20,12 @@ void load_default_theme() {
   theme.CurrentDayOutlineFg = GColorChromeYellow;
   theme.InnerRingFg = GColorDarkGray;
   theme.CurrentDoWFillBg = GColorChromeYellow ;
-  theme.LeapYearFg = GColorMelon ;
+  theme.LeapYearFg = GColorRed;
   theme.NonLeapYearFg = GColorWhite ;
-  theme.SunriseFillBg = GColorBlue;
+  theme.SunriseFillBg = GColorIcterine;
   theme.SunriseOutlineFg = GColorBlue;
-  theme.SunsetFillBg = GColorCadetBlue;
-  theme.SunsetOutlineFg = GColorSunsetOrange;
+  theme.SunsetFillBg = GColorSunsetOrange;
+  theme.SunsetOutlineFg = GColorIcterine;
 }
 
 Settings settings;

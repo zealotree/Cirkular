@@ -23,6 +23,9 @@
       "SEND",
       "AppKeyJSReady"
     ],
+    "capabilities": [
+      "location"
+    ],
     "resources": {
       "media": []
     }
