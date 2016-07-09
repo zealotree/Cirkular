@@ -1,9 +1,15 @@
 var SunCalc = require('./suncalc');
 
+var lat;
+var lon;
+
 
 function setPos(pos) {
+  console.log(typeof pos.coords.latitdue);
   console.log("Success -- setting coords")
   var times = SunCalc.getTimes(new Date(), pos.coords.latitude, pos.coords.longitude);
+  localStorage.setItem('lastLAT', pos.coords.longitude);
+  localStorage.setItem('lastLON', pos.coords.latitude);
   var sunrise = parseInt(times.sunrise.getTime()/1000);
   var sunset = parseInt(times.sunset.getTime()/1000);
   Pebble.sendAppMessage({'SUNRISE' : sunrise});
@@ -11,7 +17,7 @@ function setPos(pos) {
 }
 
 function noSetPos(pos) {
-  console.log("Failed getting location -- using default coordinates if possible")
+  console.log("Failed getting location. Location must be enabled.")
 }
 
 Pebble.addEventListener('ready', function() {
