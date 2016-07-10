@@ -91,16 +91,16 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   if (persist_read_int(SUNRISE_KEY)) {
 		int h12;
 		int temp_ap;
-		time_t sunset_t = persist_read_int(SUNRISE_KEY);
-		struct tm *sunset_time = localtime(&sunset_t);
+		time_t sunrise_t = persist_read_int(SUNRISE_KEY);
+		struct tm *sunrise_time = localtime(&sunrise_t);
 
-		if (sunset_time->tm_hour > 12) {
-      h12 = sunset_time->tm_hour - 12;
+		if (sunrise_time->tm_hour > 12) {
+      h12 = sunrise_time->tm_hour - 12;
       } else {
-      h12 = sunset_time->tm_hour;
+      h12 = sunrise_time->tm_hour;
 		}
 
-		strftime(ap_buffer, sizeof(ap_buffer), "%p", sunset_time);
+		strftime(ap_buffer, sizeof(ap_buffer), "%p", sunrise_time);
 		if (! strcmp(ap_buffer, "AM")) {
 			temp_ap = 1;
 		} else {
@@ -108,7 +108,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 		}
 
 		if (i == h12 && temp_ap == s_last_time.ap) {
-		  graphics_context_set_fill_color(ctx, theme.SunsetFillBg);
+		  graphics_context_set_fill_color(ctx, theme.SunriseFillBg);
 		  graphics_fill_circle(ctx, pos, 15); 
 		}
   }
