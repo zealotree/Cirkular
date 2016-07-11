@@ -1,9 +1,14 @@
+#pragma once
+
 #include <pebble.h>
 // Define your defaults here
 
 #define SETTINGS_KEY 1
 #define SUNRISE_KEY 2
 #define SUNSET_KEY 3
+#define USE_GPS_KEY 4
+#define LAT_KEY 5
+#define LON_KEY 6
 #define SEND 900
 
 typedef struct {
@@ -34,9 +39,9 @@ typedef struct {
 }  __attribute__((__packed__)) Theme;
 
 typedef struct {
-  bool ENABLE_SUN;
   int SUNRISE;
   int SUNSET;
+  bool USE_GPS;
 }  __attribute__((__packed__)) Settings;
 
 void load_default_theme();

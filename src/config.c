@@ -2,7 +2,6 @@
 #include <config.h>
 
 Theme theme;
-
 void load_default_theme() {
   // Override these to change color before compiling
   theme.MainBg = GColorBlack;
@@ -30,7 +29,6 @@ void load_default_theme() {
 
 Settings settings;
 void load_default_settings() {
-  settings.ENABLE_SUN = true; // Gets current location
 }
 
 
