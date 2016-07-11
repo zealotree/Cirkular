@@ -248,10 +248,6 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 }
 static void tick_handler(struct tm *tick_time, TimeUnits changed) {
 
-  if (! persist_exists(SUNRISE_KEY) && ! persist_exists(SUNSET_KEY)) {
-    request_data();
-  }
-  
   s_last_time.h24 = tick_time->tm_hour;
     if (tick_time->tm_hour > 12) {
     s_last_time.h12 = s_last_time.h24 - 12;
@@ -269,8 +265,13 @@ static void tick_handler(struct tm *tick_time, TimeUnits changed) {
   } else {
     s_last_time.ap = 2;
   }
+  layer_mark_dirty(draw_layer);
 
   if (DAY_UNIT & changed) {
+    request_data();
+  }
+
+  if (! persist_exists(SUNRISE_KEY) && ! persist_exists(SUNSET_KEY)) {
     request_data();
   }
 
